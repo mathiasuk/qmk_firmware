@@ -163,11 +163,25 @@ void oled_task_user(void) {
 #ifdef ENCODER_ENABLE
 void encoder_update_user(uint8_t index, bool clockwise) {
     if (index == 0) {
-        // Volume control
-        if (clockwise) {
-            tap_code(KC_VOLU);
-        } else {
-            tap_code(KC_VOLD);
+        switch(biton32(layer_state)){
+            case 2:
+                register_code(KC_LCTL);
+                if (clockwise) {
+                    tap_code(KC_PGDN);
+                } else {
+                    tap_code(KC_PGUP);
+                }
+                unregister_code(KC_LCTL);
+                break;
+
+            default:
+                // Volume control
+                if (clockwise) {
+                    tap_code(KC_VOLU);
+                } else {
+                    tap_code(KC_VOLD);
+                }
+                break;
         }
     }
     else if (index == 1) {
