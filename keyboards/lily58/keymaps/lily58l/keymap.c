@@ -330,3 +330,9 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
     return true;
 }
 #endif
+
+void keyboard_post_init_user(void) {
+	rgblight_enable();
+	rgblight_mode(RGBLIGHT_MODE_RAINBOW_MOOD);
+	/*rgblight_sethsv(255, 255, 255);*/
+}

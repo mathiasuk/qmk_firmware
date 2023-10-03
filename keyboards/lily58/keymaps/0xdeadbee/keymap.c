@@ -74,9 +74,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_GAME] = LAYOUT( \
   _______, _______, _______, _______, _______, _______,                   _______, _______, _______, _______, _______, _______, \
   _______, _______, _______, _______, _______, _______,                   _______, _______, _______, _______, _______, _______, \
-  _______, _______, _______, _______, _______, _______,                   _______, _______, _______, _______, _______, _______, \
+  KC_ESC, _______, _______, _______, _______, _______,                   _______, _______, _______, _______, _______, _______, \
   _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,\
-                             _______, _______, _______, KC_SPC, KC_ENT,  _______, _______, _______ \
+                             _______, _______, _______, _______, _______,  _______, _______, _______ \
+                             /*_______, _______, _______, KC_SPC, KC_ENT,  _______, _______, _______ \*/
 ),
 /* LOWER
  * ,-----------------------------------------.                    ,-----------------------------------------.
@@ -127,7 +128,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
  * |      |      | Web  |      |      | Term |                    |      |      |      |      | Play |      |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
- * |      |      |Print |      |      |      |-------.    ,-------|      |      |RGB ON| HUE+ | SAT+ | VAL+ |
+ * |      |      |Print |      | File |      |-------.    ,-------|      |      |RGB ON| HUE+ | SAT+ | VAL+ |
  * |------+------+------+------+------+------|       |    |       |------+------+------+------+------+------|
  * |      |      |      | CAPS |      |      |-------|    |-------|      |      | MODE | HUE- | SAT- | VAL- |
  * `-----------------------------------------/       /     \      \-----------------------------------------'
@@ -137,8 +138,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
   [_ADJUST] = LAYOUT( \
   TG(_GAME), XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,             XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, \
-  XXXXXXX, XXXXXXX, LGUI(KC_W), XXXXXXX, XXXXXXX, A(KC_ENT),          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_MPLY, XXXXXXX, \
-  XXXXXXX, XXXXXXX, KC_PSCR, XXXXXXX, XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, RGB_TOG, RGB_HUI, RGB_SAI, RGB_VAI, \
+  XXXXXXX, XXXXXXX, LGUI(KC_W), XXXXXXX, XXXXXXX, LGUI(KC_T),          XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_MPLY, XXXXXXX, \
+  XXXXXXX, XXXXXXX, KC_PSCR, XXXXXXX, LGUI(KC_F), XXXXXXX,                   XXXXXXX, XXXXXXX, RGB_TOG, RGB_HUI, RGB_SAI, RGB_VAI, \
   XXXXXXX, XXXXXXX, XXXXXXX, KC_LOCK, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, RGB_MOD, RGB_HUD, RGB_SAD, RGB_VAD,\
                              _______, _______, _______, _______, _______,  _______, _______, _______ \
   )
@@ -290,20 +291,35 @@ void render_status_main(void) {
     oled_write_P(PSTR("-----"), false);
 }
 
+uint16_t rgblight_timer              = 0;
+
+void rgblight_sleep(void) {
+    if (rgblight_is_enabled() && timer_elapsed(rgblight_timer) > 2000) {
+        rgblight_disable();
+    }
+}
+
 bool oled_task_user(void) {
-  /*update_log();*/
-  if (is_keyboard_master()) {
-    render_status_main();  // Renders the current keyboard state (layer, lock, caps, scroll, etc)
-  } else {
-    render_lily58_logo();
-  }
+    /*update_log();*/
+    if (is_keyboard_master()) {
+        render_status_main();  // Renders the current keyboard state (layer, lock, caps, scroll, etc)
+    } else {
+        render_lily58_logo();
+    }
+    /*rgblight_sleep();*/
     return false;
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (record->event.pressed) {
         add_keylog(keycode);
+
+        /*if (!rgblight_is_enabled()) {*/
+            /*rgblight_enable();*/
+        /*}*/
+        /*rgblight_timer = timer_read();*/
     }
+
     return true;
 }
 #endif // OLED_ENABLE

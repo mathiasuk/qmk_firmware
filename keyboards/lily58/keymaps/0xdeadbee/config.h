@@ -38,10 +38,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // #define SPLIT_USB_DETECT
 // #define NO_USB_STARTUP_CHECK
 
-#define ENCODERS_PAD_A { F4 }
-#define ENCODERS_PAD_B { F5 }
-#define ENCODERS_PAD_A_RIGHT { F5 }
-#define ENCODERS_PAD_B_RIGHT { F4 }
+#define ENCODER_DIRECTION_FLIP
+
+#define RGBLIGHT_DEFAULT_MODE         RGBLIGHT_MODE_RAINBOW_MOOD
+#define RGBLIGHT_DEFAULT_VAL          50
+//#define RGBLIGHT_DEFAULT_HUE          170
 
 #define TAPPING_TERM 200
 #define IGNORE_MOD_TAP_INTERRUPT
